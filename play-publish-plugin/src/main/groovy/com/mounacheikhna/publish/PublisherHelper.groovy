@@ -35,14 +35,14 @@ import java.security.GeneralSecurityException
  * Helper class to initialize the publisher APIs client library.
  * <p>
  * Before making any calls to the API through the client library you need to
- * call the {@link AndroidPublisherHelper#init(String, File)} method. This will run
+ * call the {@link PublisherHelper#init(String, File)} method. This will run
  * all precondition checks for client id and secret setup properly in
  * resources/client_secrets.json and authorize this client against the API.
  * </p>
  */
-public class AndroidPublisherHelper {
+public class PublisherHelper {
 
-    private static final Log log = LogFactory.getLog(AndroidPublisherHelper.class);
+    private static final Log log = LogFactory.getLog(PublisherHelper.class);
 
     private static final String APPLICATION_NAME = "gradle-play-publisher"
 
@@ -56,7 +56,7 @@ public class AndroidPublisherHelper {
     /** Global instance of the HTTP transport. */
     private static HttpTransport HTTP_TRANSPORT;
 
-    private static Credential authorizeWithServiceAccount(PlayPublisherPluginExtension extension)
+    private static Credential authorizeWithServiceAccount(PublishExtension extension)
             throws GeneralSecurityException, IOException {
         if (extension.serviceAccountEmail && extension.pk12File) {
             return authorizeWithServiceAccount(extension.serviceAccountEmail, extension.pk12File);
@@ -98,7 +98,7 @@ public class AndroidPublisherHelper {
      * @throws GeneralSecurityException
      * @throws IOException
      */
-    protected static AndroidPublisher init(PlayPublisherPluginExtension extension)
+    protected static AndroidPublisher init(PublishExtension extension)
             throws IOException, GeneralSecurityException {
 
         // Authorization.

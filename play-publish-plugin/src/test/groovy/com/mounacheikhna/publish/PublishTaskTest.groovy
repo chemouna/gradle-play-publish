@@ -5,6 +5,7 @@ import com.google.api.services.androidpublisher.model.AppEdit
 import org.gradle.api.Project
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mock
 
@@ -17,7 +18,8 @@ import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.verify
 import static org.mockito.MockitoAnnotations.initMocks
 
-public class PlayPublishTaskTest {
+@Ignore
+public class PublishTaskTest {
 
     @Mock
     AndroidPublisher publisherMock
@@ -86,7 +88,6 @@ public class PlayPublishTaskTest {
         verify(editsMock).insert("com.example.publisher.paid.release", null)
     }
 
-    @Ignore
     @Test
     public void testMatcher() {
         Project project = TestHelper.evaluatableProject()

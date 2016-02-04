@@ -7,17 +7,17 @@ import com.google.api.services.androidpublisher.model.Listing
 import org.apache.commons.io.FileUtils
 import org.gradle.api.tasks.TaskAction
 
-class BootstrapTask extends PlayPublishTask {
+class InitTask extends PublishTask {
 
     def IMAGE_TYPE_ARRAY = [
-        PlayPublishListingTask.IMAGE_TYPE_ICON,
-        PlayPublishListingTask.IMAGE_TYPE_FEATURE_GRAPHIC,
-        PlayPublishListingTask.IMAGE_TYPE_PHONE_SCREENSHOTS,
-        PlayPublishListingTask.IMAGE_TYPE_SEVEN_INCH_SCREENSHOTS,
-        PlayPublishListingTask.IMAGE_TYPE_TEN_INCH_SCREENSHOTS,
-        PlayPublishListingTask.IMAGE_TYPE_PROMO_GRAPHIC,
-        PlayPublishListingTask.IMAGE_TYPE_TV_BANNER,
-        PlayPublishListingTask.IMAGE_TYPE_TV_SCREENSHOTS,
+            PublishListingTask.IMAGE_TYPE_ICON,
+            PublishListingTask.IMAGE_TYPE_FEATURE_GRAPHIC,
+            PublishListingTask.IMAGE_TYPE_PHONE_SCREENSHOTS,
+            PublishListingTask.IMAGE_TYPE_SEVEN_INCH_SCREENSHOTS,
+            PublishListingTask.IMAGE_TYPE_TEN_INCH_SCREENSHOTS,
+            PublishListingTask.IMAGE_TYPE_PROMO_GRAPHIC,
+            PublishListingTask.IMAGE_TYPE_TV_BANNER,
+            PublishListingTask.IMAGE_TYPE_TV_SCREENSHOTS,
     ]
 
     File outputFolder
@@ -58,7 +58,7 @@ class BootstrapTask extends PlayPublishTask {
                 continue
             }
 
-            File listingDir = new File(languageDir, PlayPublishListingTask.LISTING_PATH)
+            File listingDir = new File(languageDir, PublishListingTask.LISTING_PATH)
             if (!listingDir.exists() && !listingDir.mkdirs()) {
                 continue
             }
@@ -71,10 +71,10 @@ class BootstrapTask extends PlayPublishTask {
                 saveImage(listingDir, imageType, images)
             }
 
-            FileUtils.writeStringToFile(new File(listingDir, PlayPublishListingTask.FILE_NAME_FOR_FULL_DESCRIPTION), fullDescription, "UTF-8")
-            FileUtils.writeStringToFile(new File(listingDir, PlayPublishListingTask.FILE_NAME_FOR_SHORT_DESCRIPTION), shortDescription, "UTF-8")
-            FileUtils.writeStringToFile(new File(listingDir, PlayPublishListingTask.FILE_NAME_FOR_TITLE), title, "UTF-8")
-            FileUtils.writeStringToFile(new File(listingDir, PlayPublishListingTask.FILE_NAME_FOR_VIDEO), video, "UTF-8")
+            FileUtils.writeStringToFile(new File(listingDir, PublishListingTask.FILE_NAME_FOR_FULL_DESCRIPTION), fullDescription, "UTF-8")
+            FileUtils.writeStringToFile(new File(listingDir, PublishListingTask.FILE_NAME_FOR_SHORT_DESCRIPTION), shortDescription, "UTF-8")
+            FileUtils.writeStringToFile(new File(listingDir, PublishListingTask.FILE_NAME_FOR_TITLE), title, "UTF-8")
+            FileUtils.writeStringToFile(new File(listingDir, PublishListingTask.FILE_NAME_FOR_VIDEO), video, "UTF-8")
         }
     }
 
@@ -108,17 +108,17 @@ class BootstrapTask extends PlayPublishTask {
                 continue
             }
 
-            FileUtils.writeStringToFile(new File(languageDir, PlayPublishApkTask.FILE_NAME_FOR_WHATS_NEW_TEXT), whatsNew, "UTF-8")
+            FileUtils.writeStringToFile(new File(languageDir, PublishApkTask.FILE_NAME_FOR_WHATS_NEW_TEXT), whatsNew, "UTF-8")
         }
     }
 
     def bootstrapAppDetails() {
         def appDetails = edits.details().get(variant.applicationId, editId).execute()
 
-        FileUtils.writeStringToFile(new File(outputFolder, PlayPublishListingTask.FILE_NAME_FOR_CONTACT_EMAIL), appDetails.getContactEmail())
-        FileUtils.writeStringToFile(new File(outputFolder, PlayPublishListingTask.FILE_NAME_FOR_CONTACT_PHONE), appDetails.getContactPhone())
-        FileUtils.writeStringToFile(new File(outputFolder, PlayPublishListingTask.FILE_NAME_FOR_CONTACT_WEBSITE), appDetails.getContactWebsite())
-        FileUtils.writeStringToFile(new File(outputFolder, PlayPublishListingTask.FILE_NAME_FOR_DEFAULT_LANGUAGE), appDetails.getDefaultLanguage())
+        FileUtils.writeStringToFile(new File(outputFolder, PublishListingTask.FILE_NAME_FOR_CONTACT_EMAIL), appDetails.getContactEmail())
+        FileUtils.writeStringToFile(new File(outputFolder, PublishListingTask.FILE_NAME_FOR_CONTACT_PHONE), appDetails.getContactPhone())
+        FileUtils.writeStringToFile(new File(outputFolder, PublishListingTask.FILE_NAME_FOR_CONTACT_WEBSITE), appDetails.getContactWebsite())
+        FileUtils.writeStringToFile(new File(outputFolder, PublishListingTask.FILE_NAME_FOR_DEFAULT_LANGUAGE), appDetails.getDefaultLanguage())
     }
 
     static def saveImage(File listingDir, String imageFolderName, List<Image> images) {
@@ -130,19 +130,6 @@ class BootstrapTask extends PlayPublishTask {
         if (images == null) {
             return
         }
-
-        // TODO: Disabled for now as we have only access to preview-versions with the current API.
-        /*
-        for (Image image : images) {
-            try {
-                OutputStream os = new File(imageFolder, image.getId() + '.png').newOutputStream()
-                os << image.getUrl().toURL().openStream()
-                os.close()
-            } catch (IOException e) {
-                e.printStackTrace()
-            }
-        }
-        */
     }
 
 }

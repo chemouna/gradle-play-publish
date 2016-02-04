@@ -8,7 +8,8 @@ import org.junit.Test
 import static org.junit.Assert.assertEquals
 import org.junit.Ignore;
 
-class PlayPublisherPluginTest {
+//@Ignore
+class PublishPluginTest {
 
     @Test(expected = PluginApplicationException.class)
     public void testThrowsOnLibraryProjects() {

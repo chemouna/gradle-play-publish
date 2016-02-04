@@ -1,6 +1,6 @@
 package com.mounacheikhna.publish
 
-class PlayPublisherPluginExtension {
+class PublishExtension {
 
     String serviceAccountEmail
 

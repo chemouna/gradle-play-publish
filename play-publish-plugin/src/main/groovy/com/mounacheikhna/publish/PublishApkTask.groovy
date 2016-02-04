@@ -7,7 +7,7 @@ import com.google.api.services.androidpublisher.model.ApkListing
 import com.google.api.services.androidpublisher.model.Track
 import org.gradle.api.tasks.TaskAction
 
-class PlayPublishApkTask extends PlayPublishTask {
+class PublishApkTask extends PublishTask {
 
     static def MAX_CHARACTER_LENGTH_FOR_WHATS_NEW_TEXT = 500
     static def FILE_NAME_FOR_WHATS_NEW_TEXT = "whatsnew"

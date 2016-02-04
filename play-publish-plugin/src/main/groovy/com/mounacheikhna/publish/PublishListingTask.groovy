@@ -8,7 +8,7 @@ import com.google.api.services.androidpublisher.model.Listing
 import org.apache.commons.lang.StringUtils
 import org.gradle.api.tasks.TaskAction
 
-class PlayPublishListingTask extends PlayPublishTask {
+class PublishListingTask extends PublishTask {
 
     static def MAX_CHARACTER_LENGTH_FOR_TITLE = 30
     static def MAX_CHARACTER_LENGTH_FOR_SHORT_DESCRIPTION = 80

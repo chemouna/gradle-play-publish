@@ -52,3 +52,6 @@ buildSrc
 .idea/**
 
 DoD
+
+play-publish-plugin/build
+buildSrc/build

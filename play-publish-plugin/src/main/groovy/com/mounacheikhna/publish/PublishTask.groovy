@@ -6,7 +6,7 @@ import com.google.api.services.androidpublisher.AndroidPublisher
 import com.google.api.services.androidpublisher.model.AppEdit
 import org.gradle.api.DefaultTask
 
-class PlayPublishTask extends DefaultTask {
+class PublishTask extends DefaultTask {
 
     def matcher = ~"^[a-z]{2}(-([A-Z]{2}|419))?\\z"
 

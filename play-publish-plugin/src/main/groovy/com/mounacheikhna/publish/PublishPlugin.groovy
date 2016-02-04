@@ -6,7 +6,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 
-class PlayPublisherPlugin implements Plugin<Project> {
+class PublishPlugin implements Plugin<Project> {
 
   public static final String PLAY_STORE_GROUP = "Play Store"
 
@@ -40,13 +40,13 @@ class PlayPublisherPlugin implements Plugin<Project> {
       def flavor = StringUtils.uncapitalize(productFlavorName)
 
       def variationName = "${productFlavorName}${buildTypeName}"
-      def organizeScreenshotsTaskName = "organizeScreenshots${variationName}"
 
       def outputData = variant.outputs.first()
       def zipAlignTask = outputData.zipAlign
       def assembleTask = outputData.assemble
-
       def variantData = variant.variantData
+
+      def organizeScreenshotsTask = createOrganizeScreenshotsTask(variationName)
 
       def bootstrapTask = createBootstrapTask(variationName, variant, flavor)
       def playResourcesTask = createPlayResourcesTask(flavor, variant,
@@ -69,12 +69,20 @@ class PlayPublisherPlugin implements Plugin<Project> {
     }
   }
 
+  private createOrganizeScreenshotsTask(variantionName) {
+    def organizeScreenshotsTaskName = "organizeScreenshots${variationName}"
+    def organizeScreenshotsTask = project.create(organizeScreenshotsTaskName)
+    organizeScreenshotsTask.description = "Organize screenshots images using naming convention for " +
+            "each play folder for the ${variationName} build"
+    organizeScreenshotsTask.group = PLAY_STORE_GROUP
+    organizeScreenshotsTask
+  }
+
   private Task createPublishTask(variationName,
           PlayPublishApkTask publishApkTask, PlayPublishListingTask publishListingTask) {
     def publishTaskName = "publish${variationName}"
     def publishTask = project.tasks.create(publishTaskName)
-    publishTask.description =
-            "Updates APK and play store listing for the ${variationName} build"
+    publishTask.description = "Updates APK and play store listing for the ${variationName} build"
     publishTask.group = PLAY_STORE_GROUP
 
     // Attach tasks to task graph.
