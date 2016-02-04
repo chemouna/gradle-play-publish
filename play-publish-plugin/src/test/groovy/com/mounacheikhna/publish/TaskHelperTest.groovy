@@ -3,6 +3,7 @@ package com.mounacheikhna.publish
 import org.junit.Assert
 import org.junit.Test
 
+//@Ignore
 class TaskHelperTest {
 
     private static final File TESTFILE = new File("src/test/fixtures/android_app/src/main/play/en-US/whatsnew")
@@ -26,7 +27,7 @@ class TaskHelperTest {
         TaskHelper.readAndTrimFile(TESTFILE, 50, true)
     }
 
-    @Test(expected = LimitExceededException.class)
+    @Test(expected = LimitReachedException.class)
     public void testIncorrectTextLength() {
         TaskHelper.readAndTrimFile(TESTFILE, 1, true)
     }

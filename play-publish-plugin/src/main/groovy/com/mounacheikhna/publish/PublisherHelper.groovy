@@ -31,29 +31,16 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.security.GeneralSecurityException
 
-/**
- * Helper class to initialize the publisher APIs client library.
- * <p>
- * Before making any calls to the API through the client library you need to
- * call the {@link PublisherHelper#init(String, File)} method. This will run
- * all precondition checks for client id and secret setup properly in
- * resources/client_secrets.json and authorize this client against the API.
- * </p>
- */
+
 public class PublisherHelper {
 
     private static final Log log = LogFactory.getLog(PublisherHelper.class);
 
     private static final String APPLICATION_NAME = "gradle-play-publisher"
-
     static final String MIME_TYPE_APK = "application/vnd.android.package-archive";
-
     static final String MIME_TYPE_IMAGE= "image/*";
 
-    /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-
-    /** Global instance of the HTTP transport. */
     private static HttpTransport HTTP_TRANSPORT;
 
     private static Credential authorizeWithServiceAccount(PublishExtension extension)
@@ -89,23 +76,12 @@ public class PublisherHelper {
         return credential.createScoped(Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER));
     }
 
-    /**
-     * Performs all necessary setup steps for running requests against the API.
-     *
-     * @param serviceAccountEmail the Service Account Email (empty if using
-     *            installed application)
-     * @return the {@Link AndroidPublisher} service
-     * @throws GeneralSecurityException
-     * @throws IOException
-     */
     protected static AndroidPublisher init(PublishExtension extension)
             throws IOException, GeneralSecurityException {
 
-        // Authorization.
         newTrustedTransport();
         Credential credential = authorizeWithServiceAccount(extension);
 
-        // Set up and return API client.
         return new AndroidPublisher.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();

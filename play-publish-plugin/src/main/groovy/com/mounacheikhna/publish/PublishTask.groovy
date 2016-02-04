@@ -10,7 +10,7 @@ class PublishTask extends DefaultTask {
 
     def matcher = ~"^[a-z]{2}(-([A-Z]{2}|419))?\\z"
 
-    PlayPublisherPluginExtension extension
+    PublishExtension extension
 
     ApplicationVariant variant
 
@@ -22,7 +22,7 @@ class PublishTask extends DefaultTask {
 
     def publish() {
         if (service == null) {
-            service = AndroidPublisherHelper.init(extension)
+            service = PublisherHelper.init(extension)
         }
 
         edits = service.edits()

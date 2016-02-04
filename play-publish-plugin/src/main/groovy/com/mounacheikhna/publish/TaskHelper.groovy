@@ -10,7 +10,7 @@ class TaskHelper {
             def message = file.text
             if (message.length() > maxCharLength) {
                 if (errorOnSizeLimit) {
-                    throw new LimitExceededException(file, maxCharLength)
+                    throw new LimitReachedException(file, maxCharLength)
                 }
 
                 return message.substring(0, maxCharLength)
@@ -25,7 +25,7 @@ class TaskHelper {
         File graphicDir = new File(listingDir, graphicPath)
         if (graphicDir.exists()) {
             return graphicDir.listFiles(new ImageFileFilter()).sort().collect { file ->
-                new FileContent(AndroidPublisherHelper.MIME_TYPE_IMAGE, file);
+                new FileContent(PublisherHelper.MIME_TYPE_IMAGE, file);
             }
         }
         return null
@@ -37,9 +37,18 @@ class TaskHelper {
             File[] files = graphicDir.listFiles(new ImageFileFilter())
             if (files.length > 0) {
                 File graphicFile = files[0]
-                return new FileContent(AndroidPublisherHelper.MIME_TYPE_IMAGE, graphicFile);
+                return new FileContent(PublisherHelper.MIME_TYPE_IMAGE, graphicFile);
             }
         }
         return null
     }
+
+    static class ImageFileFilter implements FileFilter {
+        @Override
+        boolean accept(File pathname) {
+            return pathname.name.toLowerCase().endsWith(".png") ||
+                    pathname.name.toLowerCase().endsWith(".jpg")
+        }
+    }
+
 }

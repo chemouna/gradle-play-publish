@@ -8,10 +8,10 @@ import org.gradle.api.Task
 
 class PublishPlugin implements Plugin<Project> {
 
-  public static final String PLAY_STORE_GROUP = "Play Store"
+  public static final String PLAY_GROUP = "Play Store"
 
   private Project project
-  private PlayPublisherPluginExtension extension
+  private PublishExtension extension
 
   @Override
   void apply(Project project) {
@@ -22,7 +22,7 @@ class PublishPlugin implements Plugin<Project> {
     if (!hasAppPlugin) {
       throw new IllegalStateException("The 'com.android.application' plugin is required.")
     }
-    extension = project.extensions.create('play', PlayPublisherPluginExtension)
+    extension = project.extensions.create('play', PublishExtension)
 
     project.android.applicationVariants.all { variant ->
       if (variant.buildType.isDebuggable()) {
@@ -52,11 +52,9 @@ class PublishPlugin implements Plugin<Project> {
       def playResourcesTask = createPlayResourcesTask(flavor, variant,
               variationName)
 
-      // Create and configure publisher meta task for this variant
       def publishListingTask = createPublishListingTask(variationName, variant, playResourcesTask)
 
       if (zipAlignTask && variantData.zipAlignEnabled) {
-        // Create and configure publisher apk task for this variant.
         def publishApkTask = createPublishApkTask(variant, playResourcesTask, variationName)
 
         def publishTask = createPublishTask(variationName, publishApkTask, publishListingTask)
@@ -69,60 +67,60 @@ class PublishPlugin implements Plugin<Project> {
     }
   }
 
-  private createOrganizeScreenshotsTask(variantionName) {
+  private createOrganizeScreenshotsTask(variationName) {
     def organizeScreenshotsTaskName = "organizeScreenshots${variationName}"
-    def organizeScreenshotsTask = project.create(organizeScreenshotsTaskName)
+    def organizeScreenshotsTask = project.tasks.create(organizeScreenshotsTaskName)
     organizeScreenshotsTask.description = "Organize screenshots images using naming convention for " +
             "each play folder for the ${variationName} build"
-    organizeScreenshotsTask.group = PLAY_STORE_GROUP
+    organizeScreenshotsTask.group = PLAY_GROUP
     organizeScreenshotsTask
   }
 
   private Task createPublishTask(variationName,
-          PlayPublishApkTask publishApkTask, PlayPublishListingTask publishListingTask) {
+          PublishApkTask publishApkTask, PublishListingTask publishListingTask) {
     def publishTaskName = "publish${variationName}"
     def publishTask = project.tasks.create(publishTaskName)
     publishTask.description = "Updates APK and play store listing for the ${variationName} build"
-    publishTask.group = PLAY_STORE_GROUP
+    publishTask.group = PLAY_GROUP
 
     // Attach tasks to task graph.
     publishTask.dependsOn publishApkTask
     publishTask.dependsOn publishListingTask
   }
 
-  private PlayPublishApkTask createPublishApkTask(variant,
-          GeneratePlayResourcesTask playResourcesTask, variationName) {
+  private PublishApkTask createPublishApkTask(variant,
+          createPlayFilesTask playResourcesTask, variationName) {
     def publishApkTaskName = "publishApk${variationName}"
-    def publishApkTask = project.tasks.create(publishApkTaskName, PlayPublishApkTask)
+    def publishApkTask = project.tasks.create(publishApkTaskName, PublishApkTask)
     publishApkTask.extension = extension
     publishApkTask.variant = variant
     publishApkTask.inputFolder = playResourcesTask.outputFolder
     publishApkTask.description = "Uploads the APK for the ${variationName} build"
-    publishApkTask.group = PLAY_STORE_GROUP
+    publishApkTask.group = PLAY_GROUP
     publishApkTask
   }
 
-  private PlayPublishListingTask createPublishListingTask(variationName, variant,
-          GeneratePlayResourcesTask playResourcesTask) {
+  private PublishListingTask createPublishListingTask(variationName, variant,
+          createPlayFilesTask playResourcesTask) {
     def publishListingTaskName = "publishListing${variationName}"
-    def publishListingTask = project.tasks.create(publishListingTaskName, PlayPublishListingTask)
+    def publishListingTask = project.tasks.create(publishListingTaskName, PublishListingTask)
     publishListingTask.extension = extension
     publishListingTask.variant = variant
     publishListingTask.inputFolder = playResourcesTask.outputFolder
     publishListingTask.description =
             "Updates the play store listing for the ${variationName} build"
-    publishListingTask.group = PLAY_STORE_GROUP
+    publishListingTask.group = PLAY_GROUP
 
     // Attach tasks to task graph.
     publishListingTask.dependsOn playResourcesTask
     publishListingTask
   }
 
-   GeneratePlayResourcesTask createPlayResourcesTask(flavor,
+   createPlayFilesTask createPlayResourcesTask(flavor,
           variant, variationName) {
     def playResourcesTaskName = "generate${variationName}PlayResources"
     def playResourcesTask = project.tasks.create(playResourcesTaskName,
-            GeneratePlayResourcesTask)
+            createPlayFilesTask)
     playResourcesTask.inputs.file(new File(project.projectDir, "src/main/play"))
     if (StringUtils.isNotEmpty(flavor)) {
       playResourcesTask.inputs.file(new File(project.projectDir, "src/${flavor}/play"))
@@ -137,13 +135,13 @@ class PublishPlugin implements Plugin<Project> {
             new File(project.projectDir, "build/outputs/play/${variant.name}")
     playResourcesTask.description =
             "Collects play store resources for the ${variationName} build"
-    playResourcesTask.group = PLAY_STORE_GROUP
+    playResourcesTask.group = PLAY_GROUP
     playResourcesTask
   }
 
   private Task createBootstrapTask(variationName, variant, flavor) {
     def bootstrapTaskName = "bootstrap${variationName}PlayResources"
-    def bootstrapTask = project.tasks.create(bootstrapTaskName, BootstrapTask)
+    def bootstrapTask = project.tasks.create(bootstrapTaskName, InitTask)
     bootstrapTask.extension = extension
     bootstrapTask.variant = variant
     if (StringUtils.isNotEmpty(flavor)) {
@@ -153,7 +151,7 @@ class PublishPlugin implements Plugin<Project> {
     }
     bootstrapTask.description =
             "Downloads the play store listing for the ${variationName} build. No download of image resources. See #18."
-    bootstrapTask.group = PLAY_STORE_GROUP
+    bootstrapTask.group = PLAY_GROUP
     bootstrapTask
   }
 }

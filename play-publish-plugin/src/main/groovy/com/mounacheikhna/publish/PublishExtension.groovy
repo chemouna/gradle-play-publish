@@ -14,11 +14,10 @@ class PublishExtension {
 
     private String track = 'alpha'
 
-    void setTrack(String track) {
+    void setTrack(String track) { //'alpha', 'beta', 'rollout', 'production'
         if (!(track in ['alpha', 'beta', 'rollout', 'production'])) {
             throw new IllegalArgumentException("Track has to be one of 'alpha', 'beta', 'rollout' or 'production'.")
         }
-
         this.track = track
     }
 

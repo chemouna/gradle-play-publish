@@ -4,8 +4,10 @@ import junit.framework.TestCase
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 
+//@Ignore
 class GenerateResourcesTest {
 
     @Test

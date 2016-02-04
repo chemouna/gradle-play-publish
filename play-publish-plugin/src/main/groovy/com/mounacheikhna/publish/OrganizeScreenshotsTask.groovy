@@ -9,118 +9,82 @@ import org.gradle.api.tasks.TaskAction
 
 public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScreenshotsSpec {
 
-    static final String PLAY_FOLDER_RELATIVE_PATH = "src/main/play"
+    static final String PLAY_FOLDER = "src/main/play"
     private static final String PHONE = "phone"
-    private static final String SEVEN_INCH_DEVICE = "sevenInch"
-    private static final String TEN_INCH_DEVICE = "tenInch"
+    private static final String SEVEN_INCH = "sevenInch"
+    private static final String TEN_INCH = "tenInch"
 
-    private List<DeviceDetails> devicesDetails
-    private String[] localesValues
+    private List<Device> devices
+    private String[] locales
     private String screenshotsSource
-    private String phoneSerialNo
-    private String sevenInchDeviceSerialNo
-    private String tenInchDeviceSerialNo
+    private String phone
+    private String sevenInch
+    private String tenInch
 
     @TaskAction
     void performTask() {
-        initDevicesDetails()
+        createDevices()
         if (!project.plugins.hasPlugin('android')) {
             throw new StopExecutionException("The 'android' plugin is required.")
         }
-        putScreenshotsImagesInPlayFolders()
-    }
-
-    private void putScreenshotsImagesInPlayFolders() {
-        File screenshotsOutputFileFolder
-        /*if (screenshotsSource == null) {
-            screenshotsOutputFileFolder = new File("${project.projectDir}/spoon-output/image/")
-        } else { */
-        screenshotsOutputFileFolder = new File("${project.projectDir}/$screenshotsSource")
-        //}
-        //ok pb is here that screenshotsOutputFileFolder doesn't contain folder with devices serialNbs
-
-        def localArray = localesValues;
-        screenshotsOutputFileFolder.eachFileRecurse(FileType.DIRECTORIES) {
+        File screenshotsFolder
+        screenshotsFolder = new File("${project.projectDir}/$screenshotsSource")
+        def allLocales = locales;
+        screenshotsFolder.eachFileRecurse(FileType.DIRECTORIES) {
             dir ->
-                DeviceDetails device = findDeviceForDirectory(dir)
-                //TODO: fix the pb here where device is found but it isn't working
+                Device device = getDeviceForDirectory(dir)
                 if (device != null) {
                     dir.eachFileRecurse(FileType.FILES) {
-                        def foundlocalIndex = StringUtils.indexOfAny(it.name, localArray);
-                        if (it.name.contains(".png") && foundlocalIndex != -1) {
-                            def locale = it.name.substring(foundlocalIndex, foundlocalIndex + 5)
-                            def localeFolder = getPlayLocalFolderName(locale)
-                            copyImageToPlayFolder(it, playImagesDir(device, localeFolder), locale)
+                        def index = StringUtils.indexOfAny(it.name, allLocales);
+                        if (it.name.contains(".png") && index != -1) {
+                            def value = it.name.substring(index, index + 5)
+                            def localeFolder = value.replace("_", "-")
+                            copyImage(it, playDeviceDir(device, localeFolder), value)
                         }
                     }
                 }
         }
     }
 
-    /**
-     * To get play locale folder name from a locale that has the format fr_FR
-     * Examples : fr_FR -> fr-FR
-     *            ro_RU -> ro ..
-     */
-    String getPlayLocalFolderName(String locale) {
-        locale.replace("_", "-")
-    }
-
-    //TODO: fix this, right now it works only emulators names and not phone.
-    DeviceDetails findDeviceForDirectory(File dir) {
-        //TODO: adapt this for #t types of devices : emu, real devices, ...
-        /**
-         it needs to find and accept :
-         "d5246a5f" & "192.168.56.101:5555"
-         */
-        def patternDeviceNbPart = ~/\d+_/
-        def deviceSerialNumber = dir.name.findAll(patternDeviceNbPart).join(".").replace("_", "")
+    Device getDeviceForDirectory(File dir) {
+        def deviceSerialNumber = dir.name.findAll(~/\d+_/).join(".").replace("_", "")
         if (deviceSerialNumber == null || deviceSerialNumber.empty) {
             deviceSerialNumber = dir.name
         }
-        this.devicesDetails.find({ it.serialNo.contains(deviceSerialNumber) })
+        this.devices.find({ it.serialNo.contains(deviceSerialNumber) })
     }
 
-    void copyImageToPlayFolder(File file, playImagesDir, locale) {
-        //temp check here -> it shldnt create it multiple times
-        def name = "copy${file.name}"
-        if (project.tasks.findByName(name)) {
-            System.out.println(" task duplicated : $name ")
-            return
-        }
-        //
-        project.tasks.create(name, Copy) {
+    void copyImage(File file, dir, locale) {
+        project.tasks.create(copy${file.name}, Copy) {
             from file.path
-            into playImagesDir
+            into dir
             rename "(.*)_($locale)_(.*).png", '$3.png'
         }.execute()
     }
 
 
-    String playImagesDir(DeviceDetails deviceDetails, String localeFolder) {
-        def playImagesDir = "${project.getProjectDir()}/$PLAY_FOLDER_RELATIVE_PATH/$localeFolder/listing/"
+    String playDeviceDir(Device deviceDetails, String localeFolder) {
+        def playImagesDir = "${project.getProjectDir()}/$PLAY_FOLDER/$localeFolder/listing/"
         if (deviceDetails.type == PHONE) {
             playImagesDir += "phoneScreenshots"
-        } else if (deviceDetails.type == SEVEN_INCH_DEVICE) {
+        } else if (deviceDetails.type == SEVEN_INCH) {
             playImagesDir += "sevenInchScreenshots"
-        } else if (deviceDetails.type == TEN_INCH_DEVICE) {
+        } else if (deviceDetails.type == TEN_INCH) {
             playImagesDir += "tenInchScreenshots"
         }
         playImagesDir
     }
 
-    private void initDevicesDetails() {
-        devicesDetails = new ArrayList<>(3)
-        if (phoneSerialNo != null && !phoneSerialNo.empty) {
-            devicesDetails.add(new DeviceDetails(PHONE, phoneSerialNo))
+    private void createDevices() {
+        devices = new ArrayList<>(3)
+        if (phone != null && !phone.empty) {
+            devices.add(new Device(PHONE, phone))
         }
-
-        if (sevenInchDeviceSerialNo != null && !sevenInchDeviceSerialNo.empty) {
-            devicesDetails.add(new DeviceDetails(SEVEN_INCH_DEVICE, sevenInchDeviceSerialNo))
+        if (sevenInch != null && !sevenInch.empty) {
+            devices.add(new Device(SEVEN_INCH, sevenInch))
         }
-
-        if (tenInchDeviceSerialNo != null && !tenInchDeviceSerialNo.empty) {
-            this.devicesDetails.add(new DeviceDetails(TEN_INCH_DEVICE, tenInchDeviceSerialNo))
+        if (tenInch != null && !tenInch.empty) {
+            this.devices.add(new Device(TEN_INCH, tenInch))
         }
     }
 
@@ -130,23 +94,34 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
     }
 
     @Override
-    void phoneSerialNo(String phoneSerialNo) {
-        this.phoneSerialNo = phoneSerialNo
+    void phone(String phone) {
+        this.phone = phone
     }
 
     @Override
-    void sevenInchDeviceSerialNo(String sevenInchDeviceSerialNo) {
-        this.sevenInchDeviceSerialNo = sevenInchDeviceSerialNo
+    void sevenInch(String sevenInch) {
+        this.sevenInch = sevenInch
     }
 
     @Override
-    void tenInchDeviceSerialNo(String tenInchDeviceSerialNo) {
-        this.tenInchDeviceSerialNo = tenInchDeviceSerialNo
+    void tenInch(String tenInch) {
+        this.tenInch = tenInch
     }
 
     @Override
     void locales(String[] locales) {
         this.locales = locales
     }
+
+    static class Device {
+        String type
+        String serialNo
+
+        Device(String type, String serialNo) {
+            this.type = type
+            this.serialNo = serialNo
+        }
+    }
+
 
 }

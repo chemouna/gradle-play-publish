@@ -19,7 +19,7 @@ class PublishApkTask extends PublishTask {
         super.publish()
 
         def apkOutput = variant.outputs.find { variantOutput -> variantOutput instanceof ApkVariantOutput }
-        FileContent newApkFile = new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, apkOutput.outputFile)
+        FileContent newApkFile = new FileContent(PublisherHelper.MIME_TYPE_APK, apkOutput.outputFile)
 
         Apk apk = edits.apks()
                 .upload(variant.applicationId, editId, newApkFile)
