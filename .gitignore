@@ -57,3 +57,5 @@ play-publish-plugin/build
 buildSrc/build
 
 play-publish-plugin/src/test/fixtures/android_app/userHome/
+
+.idea
