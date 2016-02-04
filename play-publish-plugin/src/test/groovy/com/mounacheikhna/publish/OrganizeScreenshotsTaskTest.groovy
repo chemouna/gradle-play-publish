@@ -21,15 +21,15 @@ public class OrganizeScreenshotsTaskTest {
     Project project = TestHelper.evaluatableProject()
 
     project.evaluate()
-    project.tasks.clean.execute()
 
-    OrganizeScreenshotsTask task = project.tasks.organizeScreenshotsRelease
+    def task = project.tasks.create("organize2")
+    task.type = OrganizeScreenshotsTask
     task.locales = ["en_US", "fr_FR", "es_ES"]
     task.screenshotsSource = "screenshotsOutput"
     task.phone = "041e4f"
     task.sevenInch = "059adef"
 
-    project.tasks.organizeScreenshotsRelease.execute()
+    task.execute()
 
     /*
      - apply plugin with uploadImages = true
