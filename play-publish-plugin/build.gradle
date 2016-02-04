@@ -24,8 +24,10 @@ dependencies {
   compile localGroovy()
   compile 'com.android.tools.build:gradle:1.5.0'
   compile "com.google.apis:google-api-services-androidpublisher:v2-rev20-1.21.0"
+
   compile "org.apache.commons:commons-lang3:3.4"
-  //compile 'commons-lang:commons-lang:2.6'
+  compile 'commons-lang:commons-lang:2.6'
+
   compile 'commons-io:commons-io:2.4'
 
   testCompile 'junit:junit:4.12'

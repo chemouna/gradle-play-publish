@@ -24,6 +24,21 @@ public class OrganizeScreenshotsTaskTest {
     project.tasks.clean.execute()
     project.tasks.organizeScreenshotsRelease.execute()
 
+    /*
+     - apply plugin with uploadImages = true
+     - format "$device_serial_nb$locale$name" or maybe better "phone$locale$name"
+          phone -> 041e4f7325232e3c
+          tablet -> 059adef
+
+          params :
+          private String[] locales
+          private String screenshotsSource
+          private String phone
+          private String sevenInch
+          private String tenInch
+
+          need to be passed either here or via extension ?
+     */
   }
 
 }

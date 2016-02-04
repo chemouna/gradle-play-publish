@@ -62,7 +62,6 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
         }.execute()
     }
 
-
     String playDeviceDir(Device deviceDetails, String localeFolder) {
         def playImagesDir = "${project.getProjectDir()}/$PLAY_FOLDER/$localeFolder/listing/"
         if (deviceDetails.type == PHONE) {
