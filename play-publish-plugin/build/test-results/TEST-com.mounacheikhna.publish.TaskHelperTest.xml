@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mounacheikhna.publish.TaskHelperTest" tests="4" skipped="4" failures="0" errors="0" timestamp="2016-02-04T01:53:53" hostname="Cheikhnas-Personal-MacBook-Pro.local" time="0.005">
+  <properties/>
+  <testcase name="testFilesAreCorrectlyTrimmed" classname="com.mounacheikhna.publish.TaskHelperTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testShortFilesAreNotTrimmed" classname="com.mounacheikhna.publish.TaskHelperTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testIncorrectTextLength" classname="com.mounacheikhna.publish.TaskHelperTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testCorrectTextLength" classname="com.mounacheikhna.publish.TaskHelperTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

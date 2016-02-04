@@ -1,1 +1,2 @@
+include ':play-publish-plugin'
 include ':app'

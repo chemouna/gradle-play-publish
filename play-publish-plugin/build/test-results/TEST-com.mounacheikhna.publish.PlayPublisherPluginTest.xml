@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mounacheikhna.publish.PlayPublisherPluginTest" tests="10" skipped="10" failures="0" errors="0" timestamp="2016-02-04T01:53:53" hostname="Cheikhnas-Personal-MacBook-Pro.local" time="0.01">
+  <properties/>
+  <testcase name="testUserFraction" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testJsonFile" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testTrack" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testCreatesDefaultTask" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testNoSigningConfigGenerateTasks" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testCreatesFlavorTasks" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testDefaultTrack" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testThrowsOnLibraryProjects" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testPublishListingTask" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testThrowsOnInvalidTrack" classname="com.mounacheikhna.publish.PlayPublisherPluginTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

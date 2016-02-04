@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mounacheikhna.publish.PlayPublishTaskTest" tests="4" skipped="4" failures="0" errors="0" timestamp="2016-02-04T01:53:53" hostname="Cheikhnas-Personal-MacBook-Pro.local" time="0.003">
+  <properties/>
+  <testcase name="testApplicationIdWithFlavorsAndSuffix" classname="com.mounacheikhna.publish.PlayPublishTaskTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testMatcher" classname="com.mounacheikhna.publish.PlayPublishTaskTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="testApplicationId" classname="com.mounacheikhna.publish.PlayPublishTaskTest" time="0.001">
+    <skipped/>
+  </testcase>
+  <testcase name="testApplicationIdChange" classname="com.mounacheikhna.publish.PlayPublishTaskTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

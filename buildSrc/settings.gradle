@@ -1,0 +1,2 @@
+include ':play-publish-plugin'
+project(':play-publish-plugin').projectDir = new File('../play-publish-plugin')
