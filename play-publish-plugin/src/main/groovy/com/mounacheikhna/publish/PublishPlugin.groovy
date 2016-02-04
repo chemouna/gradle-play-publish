@@ -89,7 +89,7 @@ class PublishPlugin implements Plugin<Project> {
   }
 
   private PublishApkTask createPublishApkTask(variant,
-          createPlayFilesTask playResourcesTask, variationName) {
+          GeneratePlayFilesTask playResourcesTask, variationName) {
     def publishApkTaskName = "publishApk${variationName}"
     def publishApkTask = project.tasks.create(publishApkTaskName, PublishApkTask)
     publishApkTask.extension = extension
@@ -101,7 +101,7 @@ class PublishPlugin implements Plugin<Project> {
   }
 
   private PublishListingTask createPublishListingTask(variationName, variant,
-          createPlayFilesTask playResourcesTask) {
+          GeneratePlayFilesTask playResourcesTask) {
     def publishListingTaskName = "publishListing${variationName}"
     def publishListingTask = project.tasks.create(publishListingTaskName, PublishListingTask)
     publishListingTask.extension = extension
@@ -116,11 +116,10 @@ class PublishPlugin implements Plugin<Project> {
     publishListingTask
   }
 
-   createPlayFilesTask createPlayResourcesTask(flavor,
-          variant, variationName) {
+   private createPlayResourcesTask(flavor, variant, variationName) {
     def playResourcesTaskName = "generate${variationName}PlayResources"
     def playResourcesTask = project.tasks.create(playResourcesTaskName,
-            createPlayFilesTask)
+            GeneratePlayFilesTask)
     playResourcesTask.inputs.file(new File(project.projectDir, "src/main/play"))
     if (StringUtils.isNotEmpty(flavor)) {
       playResourcesTask.inputs.file(new File(project.projectDir, "src/${flavor}/play"))

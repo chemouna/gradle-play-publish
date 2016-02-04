@@ -4,7 +4,7 @@ import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class createPlayFilesTask extends DefaultTask {
+class GeneratePlayFilesTask extends DefaultTask {
 
     File outputFolder;
 

@@ -131,4 +131,20 @@ class PublishPluginTest {
         }
     }
 
+    @Test
+    public void testOrganizeScreenshotsTask() {
+        Project project = TestHelper.evaluatableProject()
+
+        project.android.productFlavors {
+            free
+            paid
+        }
+
+        project.evaluate()
+
+        Assert.assertNotNull(project.tasks.organizeScreenshotsFreeRelease)
+        Assert.assertNotNull(project.tasks.organizeScreenshotsPaidRelease)
+
+    }
+
 }
