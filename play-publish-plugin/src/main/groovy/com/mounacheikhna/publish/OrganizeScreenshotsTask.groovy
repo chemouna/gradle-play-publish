@@ -14,12 +14,12 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
     private static final String SEVEN_INCH = "sevenInch"
     private static final String TEN_INCH = "tenInch"
 
-    private List<Device> devices
-    private String[] locales
-    private String screenshotsSource
-    private String phone
-    private String sevenInch
-    private String tenInch
+    List<Device> devices
+    String[] locales
+    String screenshotsSource
+    String phone
+    String sevenInch
+    String tenInch
 
     @TaskAction
     void performTask() {

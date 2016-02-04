@@ -22,6 +22,13 @@ public class OrganizeScreenshotsTaskTest {
 
     project.evaluate()
     project.tasks.clean.execute()
+
+    OrganizeScreenshotsTask task = project.tasks.organizeScreenshotsRelease
+    task.locales = ["en_US", "fr_FR", "es_ES"]
+    task.screenshotsSource = "screenshotsOutput"
+    task.phone = "041e4f"
+    task.sevenInch = "059adef"
+
     project.tasks.organizeScreenshotsRelease.execute()
 
     /*
@@ -31,12 +38,6 @@ public class OrganizeScreenshotsTaskTest {
           tablet -> 059adef
 
           params :
-          private String[] locales
-          private String screenshotsSource
-          private String phone
-          private String sevenInch
-          private String tenInch
-
           need to be passed either here or via extension ?
      */
   }

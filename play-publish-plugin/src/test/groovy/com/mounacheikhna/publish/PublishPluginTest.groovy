@@ -144,7 +144,6 @@ class PublishPluginTest {
 
         Assert.assertNotNull(project.tasks.organizeScreenshotsFreeRelease)
         Assert.assertNotNull(project.tasks.organizeScreenshotsPaidRelease)
-
     }
 
 }
