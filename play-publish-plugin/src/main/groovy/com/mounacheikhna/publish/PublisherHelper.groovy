@@ -31,6 +31,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.security.GeneralSecurityException
 
+import static com.google.api.services.androidpublisher.AndroidPublisherScopes.ANDROIDPUBLISHER
 
 public class PublisherHelper {
 
@@ -62,7 +63,7 @@ public class PublisherHelper {
                 .setTransport(HTTP_TRANSPORT)
                 .setJsonFactory(JSON_FACTORY)
                 .setServiceAccountId(serviceAccountEmail)
-                .setServiceAccountScopes(Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER))
+                .setServiceAccountScopes(Collections.singleton(ANDROIDPUBLISHER))
                 .setServiceAccountPrivateKeyFromP12File(pk12File)
                 .build();
         return credential;
@@ -73,7 +74,7 @@ public class PublisherHelper {
         InputStream serviceAccountStream = new ByteArrayInputStream(Files.readAllBytes(path));
         GoogleCredential credential = GoogleCredential
                 .fromStream(serviceAccountStream, HTTP_TRANSPORT, JSON_FACTORY);
-        return credential.createScoped(Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER));
+        return credential.createScoped(Collections.singleton(ANDROIDPUBLISHER));
     }
 
     protected static AndroidPublisher init(PublishExtension extension)
