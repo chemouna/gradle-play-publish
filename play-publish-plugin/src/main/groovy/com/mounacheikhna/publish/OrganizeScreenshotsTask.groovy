@@ -24,9 +24,6 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
     @TaskAction
     void performTask() {
         createDevices()
-        if (!project.plugins.hasPlugin('android')) {
-            throw new StopExecutionException("The 'android' plugin is required.")
-        }
         File screenshotsFolder
         screenshotsFolder = new File("${project.projectDir}/$screenshotsSource")
         def allLocales = locales;
