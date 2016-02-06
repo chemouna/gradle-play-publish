@@ -48,6 +48,7 @@ class PublishPlugin implements Plugin<Project> {
 
       def organizeScreenshotsTask = createOrganizeScreenshotsTask(variationName)
 
+      def checkForPublishErrorsTask = createCheckForPublishErrors()
       def bootstrapTask = createBootstrapTask(variationName, variant, flavor)
       def playResourcesTask = createPlayResourcesTask(flavor, variant,
               variationName)
@@ -67,11 +68,23 @@ class PublishPlugin implements Plugin<Project> {
     }
   }
 
+  private Task createCheckForPublishErrors(variationName) {
+    def checkForErrorsTaskName = "checkErrors${variationName}"
+    def checkForErrorsTask = project.tasks.create(checkForErrorsTaskName,)
+    checkForErrorsTask.description =
+            "Checks for errors that may occur during publishing and cause " +
+                    "publishing to be refused for ${variationName} build"
+    checkForErrorsTask.group = PLAY_GROUP
+    checkForErrorsTask
+  }
+
   private createOrganizeScreenshotsTask(variationName) {
     def organizeScreenshotsTaskName = "organizeScreenshots${variationName}"
-    def organizeScreenshotsTask = project.tasks.create(organizeScreenshotsTaskName)
-    organizeScreenshotsTask.description = "Organize screenshots images using naming convention for " +
-            "each play folder for the ${variationName} build"
+    def organizeScreenshotsTask = project.tasks.create(organizeScreenshotsTaskName,
+            OrganizeScreenshotsTask)
+    organizeScreenshotsTask.description =
+            "Organize screenshots images using naming convention for " +
+                    "each play folder for the ${variationName} build"
     organizeScreenshotsTask.group = PLAY_GROUP
     organizeScreenshotsTask
   }
@@ -79,7 +92,7 @@ class PublishPlugin implements Plugin<Project> {
   private Task createPublishTask(variationName,
           PublishApkTask publishApkTask, PublishListingTask publishListingTask) {
     def publishTaskName = "publish${variationName}"
-    def publishTask = project.tasks.create(publishTaskName)
+    def publishTask = project.tasks.create(publishTaskName, PublishTask)
     publishTask.description = "Updates APK and play store listing for the ${variationName} build"
     publishTask.group = PLAY_GROUP
 
@@ -116,10 +129,9 @@ class PublishPlugin implements Plugin<Project> {
     publishListingTask
   }
 
-   private createPlayResourcesTask(flavor, variant, variationName) {
+  private createPlayResourcesTask(flavor, variant, variationName) {
     def playResourcesTaskName = "generate${variationName}PlayResources"
-    def playResourcesTask = project.tasks.create(playResourcesTaskName,
-            GeneratePlayFilesTask)
+    def playResourcesTask = project.tasks.create(playResourcesTaskName, GeneratePlayFilesTask)
     playResourcesTask.inputs.file(new File(project.projectDir, "src/main/play"))
     if (StringUtils.isNotEmpty(flavor)) {
       playResourcesTask.inputs.file(new File(project.projectDir, "src/${flavor}/play"))
