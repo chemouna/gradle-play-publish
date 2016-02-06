@@ -1,31 +1,30 @@
 package com.mounacheikhna.publish
 
+import com.android.annotations.Nullable
 import groovy.io.FileType
 import org.apache.commons.lang3.StringUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
 public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScreenshotsSpec {
 
-    static final String PLAY_FOLDER = "src/main/play"
     private static final String PHONE = "phone"
     private static final String SEVEN_INCH = "sevenInch"
     private static final String TEN_INCH = "tenInch"
 
-    List<Device> devices
-    String[] locales
-    String screenshotsSource
-    String phone
-    String sevenInch
-    String tenInch
+    private List<Device> devices
+    private String[] locales
+    private String screenshotsSource
+    private String phone
+    private String sevenInch
+    private String tenInch
+    private String playFolder = "src/main/play"
 
     @TaskAction
     void performTask() {
         createDevices()
-        File screenshotsFolder
-        screenshotsFolder = new File("${project.projectDir}/$screenshotsSource")
+        File screenshotsFolder = new File("${project.projectDir}/$screenshotsSource")
         def allLocales = locales;
         screenshotsFolder.eachFileRecurse(FileType.DIRECTORIES) {
             dir ->
@@ -52,7 +51,7 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
     }
 
     void copyImage(File file, dir, locale) {
-        project.tasks.create(copy${file.name}, Copy) {
+        project.tasks.create("copy${file.name}", Copy) {
             from file.path
             into dir
             rename "(.*)_($locale)_(.*).png", '$3.png'
@@ -60,27 +59,33 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
     }
 
     String playDeviceDir(Device deviceDetails, String localeFolder) {
-        def playImagesDir = "${project.getProjectDir()}/$PLAY_FOLDER/$localeFolder/listing/"
+        //TODO: this all should be configurable
+        def listingFolder = "listing"
+        def phoneFolder = "phoneScreenshots"
+        def sevenInchFolder = "sevenInchScreenshots"
+        def tenInchFolder = "tenInchScreenshots"
+
+        def playImagesDir = "${project.getProjectDir()}/$playBaseFolder/$localeFolder"
         if (deviceDetails.type == PHONE) {
-            playImagesDir += "phoneScreenshots"
+            playImagesDir += "/$listingFolder/$phoneFolder"
         } else if (deviceDetails.type == SEVEN_INCH) {
-            playImagesDir += "sevenInchScreenshots"
+            playImagesDir += "/$listingFolder/$sevenInchFolder"
         } else if (deviceDetails.type == TEN_INCH) {
-            playImagesDir += "tenInchScreenshots"
+            playImagesDir += "/$listingFolder/$tenInchFolder"
         }
         playImagesDir
     }
 
     private void createDevices() {
         devices = new ArrayList<>(3)
-        if (phone != null && !phone.empty) {
-            devices.add(new Device(PHONE, phone))
-        }
-        if (sevenInch != null && !sevenInch.empty) {
-            devices.add(new Device(SEVEN_INCH, sevenInch))
-        }
-        if (tenInch != null && !tenInch.empty) {
-            this.devices.add(new Device(TEN_INCH, tenInch))
+        addDevice(phone, PHONE)
+        addDevice(sevenInch, SEVEN_INCH)
+        addDevice(tenInch, TEN_INCH)
+    }
+
+    private void addDevice(String type, String name) {
+        if (type != null && !type.empty) {
+            devices.add(new Device(name, type))
         }
     }
 
@@ -109,8 +114,13 @@ public class OrganizeScreenshotsTask extends DefaultTask implements OrganizeScre
         this.locales = locales
     }
 
+    @Override
+    void playFolder(String playFolder) {
+        this.playFolder = playFolder
+    }
+
     static class Device {
-        String type
+        String type //TODO: make device type an enum with some methods encapsulated in it
         String serialNo
 
         Device(String type, String serialNo) {

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.doReturn
 import static org.mockito.Mockito.verify
 import static org.mockito.MockitoAnnotations.initMocks
 
-//@Ignore
+@Ignore
 public class PublishTaskTest {
 
     @Mock

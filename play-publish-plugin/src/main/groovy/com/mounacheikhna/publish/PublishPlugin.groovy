@@ -47,11 +47,9 @@ class PublishPlugin implements Plugin<Project> {
       def variantData = variant.variantData
 
       def organizeScreenshotsTask = createOrganizeScreenshotsTask(variationName)
-
-      def checkForPublishErrorsTask = createCheckForPublishErrors()
+      def checkForPublishErrorsTask = createCheckForPublishErrors(variationName)
       def bootstrapTask = createBootstrapTask(variationName, variant, flavor)
-      def playResourcesTask = createPlayResourcesTask(flavor, variant,
-              variationName)
+      def playResourcesTask = createPlayResourcesTask(flavor, variant, variationName)
 
       def publishListingTask = createPublishListingTask(variationName, variant, playResourcesTask)
 
@@ -70,7 +68,7 @@ class PublishPlugin implements Plugin<Project> {
 
   private Task createCheckForPublishErrors(variationName) {
     def checkForErrorsTaskName = "checkErrors${variationName}"
-    def checkForErrorsTask = project.tasks.create(checkForErrorsTaskName,)
+    def checkForErrorsTask = project.tasks.create(checkForErrorsTaskName, CheckTask)
     checkForErrorsTask.description =
             "Checks for errors that may occur during publishing and cause " +
                     "publishing to be refused for ${variationName} build"

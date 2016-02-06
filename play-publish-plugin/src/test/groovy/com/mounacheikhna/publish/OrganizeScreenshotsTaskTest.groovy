@@ -8,7 +8,7 @@ import org.junit.Test
 /**
  * Created by cheikhnamouna on 2/4/16.
  */
-//@Ignore
+@Ignore
 public class OrganizeScreenshotsTaskTest {
 
   @Before
@@ -16,6 +16,7 @@ public class OrganizeScreenshotsTaskTest {
 
   }
 
+/*
   @Test
   public void imageIsCopiedToFolderUsingNameConvention() {
     Project project = TestHelper.evaluatableProject()
@@ -30,8 +31,10 @@ public class OrganizeScreenshotsTaskTest {
     task.sevenInch = "059adef"
 
     task.execute()
+  }
+*/
 
-    /*
+  /*
      - apply plugin with uploadImages = true
      - format "$device_serial_nb$locale$name" or maybe better "phone$locale$name"
           phone -> 041e4f7325232e3c
@@ -40,6 +43,5 @@ public class OrganizeScreenshotsTaskTest {
           params :
           need to be passed either here or via extension ?
      */
-  }
 
 }
