@@ -13,6 +13,10 @@ class PublishPlugin implements Plugin<Project> {
   private Project project
   private PublishExtension extension
 
+  private final playFolder = "play"
+  private final playMainFolder = "src/main/$playFolder"
+  private final playSaveFileName = "${project.projectDir}/play.save"
+
   @Override
   void apply(Project project) {
     def log = project.logger
@@ -47,18 +51,29 @@ class PublishPlugin implements Plugin<Project> {
       def variantData = variant.variantData
 
       def organizeScreenshotsTask = createOrganizeScreenshotsTask(variationName)
-      def checkForPublishErrorsTask = createCheckForPublishErrors(variationName)
       def bootstrapTask = createBootstrapTask(variationName, variant, flavor)
       def playResourcesTask = createPlayResourcesTask(flavor, variant, variationName)
 
       def publishListingTask = createPublishListingTask(variationName, variant, playResourcesTask)
 
+      //def checkForPublishErrorsTask = createCheckForPublishErrors(variationName, pla)
       if (zipAlignTask && variantData.zipAlignEnabled) {
         def publishApkTask = createPublishApkTask(variant, playResourcesTask, variationName)
 
         def publishTask = createPublishTask(variationName, publishApkTask, publishListingTask)
         publishApkTask.dependsOn playResourcesTask
+        publishApkTask.dependsOn createCheckForPublishErrors(variationName, playSaveFileName, variant)
         publishApkTask.dependsOn assembleTask
+
+        Task onPublishApkFinish = project.tasks.create("onPublishApkFinish") {
+          def failure = project.tasks.connectedAndroidTest.state.failure
+          if(!failure) {
+            File playSaveFile = new File(playSaveFileName)
+            int versionCode = variant.mergedFlavor.versionCode
+            playSaveFile.write(versionCode.toString(), "UTF-8")
+          }
+        }
+        publishApkTask.finalizedBy(onPublishApkFinish)
       } else {
         log.warn(
                 "Could not find ZipAlign task. Did you specify a signingConfig for the variation ${variationName}?")
@@ -66,9 +81,12 @@ class PublishPlugin implements Plugin<Project> {
     }
   }
 
-  private Task createCheckForPublishErrors(variationName) {
+  private Task createCheckForPublishErrors(variationName, playFilePath, variant) {
     def checkForErrorsTaskName = "checkErrors${variationName}"
-    def checkForErrorsTask = project.tasks.create(checkForErrorsTaskName, CheckTask)
+    def checkForErrorsTask = project.tasks.create(checkForErrorsTaskName, CheckTask) {
+      playFilePath(playFilePath)
+      variant(variant)
+    }
     checkForErrorsTask.description =
             "Checks for errors that may occur during publishing and cause " +
                     "publishing to be refused for ${variationName} build"
@@ -130,9 +148,9 @@ class PublishPlugin implements Plugin<Project> {
   private createPlayResourcesTask(flavor, variant, variationName) {
     def playResourcesTaskName = "generate${variationName}PlayResources"
     def playResourcesTask = project.tasks.create(playResourcesTaskName, GeneratePlayFilesTask)
-    playResourcesTask.inputs.file(new File(project.projectDir, "src/main/play"))
+    playResourcesTask.inputs.file(new File(project.projectDir, playMainFolder))
     if (StringUtils.isNotEmpty(flavor)) {
-      playResourcesTask.inputs.file(new File(project.projectDir, "src/${flavor}/play"))
+      playResourcesTask.inputs.file(new File(project.projectDir, "src/${flavor}/" + playFolder))
     }
     playResourcesTask.inputs.file(
             new File(project.projectDir, "src/${variant.buildType.name}/play"))
