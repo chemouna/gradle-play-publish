@@ -66,3 +66,5 @@ app/build
 play-publish-plugin/build
 buildSrc/build
 
+maptube/
+settings.gradle
