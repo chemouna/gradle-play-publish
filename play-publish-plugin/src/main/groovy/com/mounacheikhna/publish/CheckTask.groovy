@@ -15,13 +15,8 @@ public class CheckTask extends DefaultTask implements CheckSpec {
 
   @TaskAction
   void check() {
-    //what can we check for ?
-    //lets first save a version code
-
-    //TODO: get the version code in play.save
     int oldVersionCode = Integer.parseInt(new File(playFilePath).text)
     def newVersionCode = variant.mergedFlavor.versionCode
-    //get current project version code
     if(oldVersionCode >= newVersionCode) {
       throw new StopExecutionException("Version code is less or equal to the play store current version: Play Store " +
               "requires a superior version for each upload.")
