@@ -15,7 +15,7 @@ class PublishPlugin implements Plugin<Project> {
 
   private final playFolder = "play"
   private final playMainFolder = "src/main/$playFolder"
-  private final playSaveFileName = "${project.projectDir}/play.save"
+  private playSaveFileName
 
   @Override
   void apply(Project project) {
@@ -27,6 +27,8 @@ class PublishPlugin implements Plugin<Project> {
       throw new IllegalStateException("The 'com.android.application' plugin is required.")
     }
     extension = project.extensions.create('play', PublishExtension)
+
+    playSaveFileName = "${project.projectDir}/play.save"
 
     project.android.applicationVariants.all { variant ->
       if (variant.buildType.isDebuggable()) {
@@ -50,8 +52,8 @@ class PublishPlugin implements Plugin<Project> {
       def assembleTask = outputData.assemble
       def variantData = variant.variantData
 
-      def organizeScreenshotsTask = createOrganizeScreenshotsTask(variationName)
-      def bootstrapTask = createBootstrapTask(variationName, variant, flavor)
+      createOrganizeScreenshotsTask(variationName)
+      createBootstrapTask(variationName, variant, flavor)
       def playResourcesTask = createPlayResourcesTask(flavor, variant, variationName)
 
       def publishListingTask = createPublishListingTask(variationName, variant, playResourcesTask)
@@ -168,7 +170,7 @@ class PublishPlugin implements Plugin<Project> {
 
   private Task createBootstrapTask(variationName, variant, flavor) {
     def bootstrapTaskName = "bootstrap${variationName}PlayResources"
-    def bootstrapTask = project.tasks.create(bootstrapTaskName, InitTask)
+    def bootstrapTask = project.tasks.create(bootstrapTaskName, BootstrapTask)
     bootstrapTask.extension = extension
     bootstrapTask.variant = variant
     if (StringUtils.isNotEmpty(flavor)) {
