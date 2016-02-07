@@ -64,13 +64,14 @@ class PublishPlugin implements Plugin<Project> {
 
         def publishTask = createPublishTask(variationName, publishApkTask, publishListingTask)
         publishApkTask.dependsOn playResourcesTask
-        publishApkTask.dependsOn createCheckForPublishErrors(variationName, playSaveFileName, variant)
+        //publishApkTask.dependsOn createCheckForPublishErrors(variationName, playSaveFileName, variant)
+        publishApkTask.dependsOn createCheckPublishTask(variationName, playSaveFileName, variant)
         publishApkTask.dependsOn assembleTask
 
         Task onPublishApkFinish = project.tasks.create("onPublishApkFinish") {
           def failure = project.tasks.connectedAndroidTest.state.failure
           if(!failure) {
-            File playSaveFile = new File(playSaveFileName)
+            File playSaveFile = new File("$playSaveFileName")
             int versionCode = variant.mergedFlavor.versionCode
             playSaveFile.write(versionCode.toString(), "UTF-8")
           }
@@ -81,6 +82,17 @@ class PublishPlugin implements Plugin<Project> {
                 "Could not find ZipAlign task. Did you specify a signingConfig for the variation ${variationName}?")
       }
     }
+  }
+
+  private Task createCheckPublishTask(variationName, playFilePath, variant) {
+    def checkTaskName = "checkPublish${variationName}"
+    def checkTask = project.tasks.create(checkTaskName, CheckPublishTask) {
+      playFilePath(playFilePath)
+      variant(variant)
+    }
+    checkTask.description = "Checks for errors that may prevent publishing."
+    checkTask.group = PLAY_GROUP
+    checkTask
   }
 
   private Task createCheckForPublishErrors(variationName, playFilePath, variant) {
