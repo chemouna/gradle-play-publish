@@ -8,4 +8,5 @@ interface OrganizeScreenshotsSpec {
     void tenInch(String tenInch)
     void locales(String[] locales)
     void playFolder(String playFolder)
+
 }
