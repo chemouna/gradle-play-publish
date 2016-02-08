@@ -15,7 +15,7 @@ class PublishPlugin implements Plugin<Project> {
 
   private final playFolder = "play"
   private final playMainFolder = "src/main/$playFolder"
-  private playSaveFileName
+  //private String playSaveFileName
 
   @Override
   void apply(Project project) {
@@ -28,7 +28,7 @@ class PublishPlugin implements Plugin<Project> {
     }
     extension = project.extensions.create('play', PublishExtension)
 
-    playSaveFileName = "${project.projectDir}/play.save"
+    //playSaveFileName = "${project.projectDir}/play.save"
 
     project.android.applicationVariants.all { variant ->
       if (variant.buildType.isDebuggable()) {
@@ -54,6 +54,8 @@ class PublishPlugin implements Plugin<Project> {
 
       createOrganizeScreenshotsTask(variationName)
       createBootstrapTask(variationName, variant, flavor)
+      def checkTask = createCheckPublishTask(variationName, variant)
+
       def playResourcesTask = createPlayResourcesTask(flavor, variant, variationName)
 
       def publishListingTask = createPublishListingTask(variationName, variant, playResourcesTask)
@@ -65,7 +67,7 @@ class PublishPlugin implements Plugin<Project> {
         def publishTask = createPublishTask(variationName, publishApkTask, publishListingTask)
         publishApkTask.dependsOn playResourcesTask
         //publishApkTask.dependsOn createCheckForPublishErrors(variationName, playSaveFileName, variant)
-        publishApkTask.dependsOn createCheckPublishTask(variationName, playSaveFileName, variant)
+        publishApkTask.dependsOn checkTask
         publishApkTask.dependsOn assembleTask
 
         Task onPublishApkFinish = project.tasks.create("onPublishApkFinish") {
@@ -78,18 +80,18 @@ class PublishPlugin implements Plugin<Project> {
         }
         publishApkTask.finalizedBy(onPublishApkFinish)
       } else {
-        log.warn(
-                "Could not find ZipAlign task. Did you specify a signingConfig for the variation ${variationName}?")
+        log.warn("Could not find ZipAlign task. Did you specify a signingConfig for the variation ${variationName}?")
       }
     }
   }
 
-  private Task createCheckPublishTask(variationName, playFilePath, variant) {
+  private Task createCheckPublishTask(variationName, appVariant) {
     def checkTaskName = "checkPublish${variationName}"
     def checkTask = project.tasks.create(checkTaskName, CheckPublishTask) {
-      playFilePath(playFilePath)
-      variant(variant)
+      variant(appVariant)
     }
+    checkTask.extension = extension
+    checkTask.variant = appVariant
     checkTask.description = "Checks for errors that may prevent publishing."
     checkTask.group = PLAY_GROUP
     checkTask
@@ -108,7 +110,7 @@ class PublishPlugin implements Plugin<Project> {
     checkForErrorsTask
   }
 
-  private createOrganizeScreenshotsTask(variationName) {
+  private Task createOrganizeScreenshotsTask(variationName) {
     def organizeScreenshotsTaskName = "organizeScreenshots${variationName}"
     def organizeScreenshotsTask = project.tasks.create(organizeScreenshotsTaskName,
             OrganizeScreenshotsTask)
@@ -131,7 +133,7 @@ class PublishPlugin implements Plugin<Project> {
     publishTask.dependsOn publishListingTask
   }
 
-  private PublishApkTask createPublishApkTask(variant,
+  private Task createPublishApkTask(variant,
           GeneratePlayFilesTask playResourcesTask, variationName) {
     def publishApkTaskName = "publishApk${variationName}"
     def publishApkTask = project.tasks.create(publishApkTaskName, PublishApkTask)
@@ -143,7 +145,7 @@ class PublishPlugin implements Plugin<Project> {
     publishApkTask
   }
 
-  private PublishListingTask createPublishListingTask(variationName, variant,
+  private Task createPublishListingTask(variationName, variant,
           GeneratePlayFilesTask playResourcesTask) {
     def publishListingTaskName = "publishListing${variationName}"
     def publishListingTask = project.tasks.create(publishListingTaskName, PublishListingTask)
@@ -159,7 +161,7 @@ class PublishPlugin implements Plugin<Project> {
     publishListingTask
   }
 
-  private createPlayResourcesTask(flavor, variant, variationName) {
+  private Task createPlayResourcesTask(flavor, variant, variationName) {
     def playResourcesTaskName = "generate${variationName}PlayResources"
     def playResourcesTask = project.tasks.create(playResourcesTaskName, GeneratePlayFilesTask)
     playResourcesTask.inputs.file(new File(project.projectDir, playMainFolder))

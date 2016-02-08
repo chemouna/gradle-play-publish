@@ -10,8 +10,8 @@ import org.gradle.api.tasks.TaskAction
  */
 class CheckPublishTask extends PublishTask implements CheckSpec {
 
-    private String playFilePath;
-    private ApplicationVariant variant;
+    private String playFilePath
+    private ApplicationVariant variant
 
     @TaskAction
     check() {

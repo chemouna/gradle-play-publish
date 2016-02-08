@@ -44,7 +44,7 @@ public class PublisherHelper {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static HttpTransport HTTP_TRANSPORT;
 
-    private static Credential authorizeWithServiceAccount(PublishExtension extension)
+    private static Credential authorizeWithServiceAccountByExtension(PublishExtension extension)
             throws GeneralSecurityException, IOException {
         if (extension.serviceAccountEmail && extension.pk12File) {
             return authorizeWithServiceAccount(extension.serviceAccountEmail, extension.pk12File);
@@ -81,7 +81,7 @@ public class PublisherHelper {
             throws IOException, GeneralSecurityException {
 
         newTrustedTransport();
-        Credential credential = authorizeWithServiceAccount(extension);
+        Credential credential = authorizeWithServiceAccountByExtension(extension);
 
         return new AndroidPublisher.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
