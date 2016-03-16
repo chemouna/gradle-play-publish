@@ -12,7 +12,7 @@ buildscript {
 apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'groovy'
 
-version = "0.1"
+version = "0.2"
 group = "com.mounacheikhna"
 
 repositories {
