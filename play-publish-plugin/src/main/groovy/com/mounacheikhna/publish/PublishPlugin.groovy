@@ -15,7 +15,7 @@ class PublishPlugin implements Plugin<Project> {
 
   private final playFolder = "play"
   private final playMainFolder = "src/main/$playFolder"
-  //private String playSaveFileName
+  private String playSaveFileName
 
   @Override
   void apply(Project project) {
@@ -28,7 +28,7 @@ class PublishPlugin implements Plugin<Project> {
     }
     extension = project.extensions.create('play', PublishExtension)
 
-    //playSaveFileName = "${project.projectDir}/play.save"
+    playSaveFileName = "${project.projectDir}/play.save"
 
     project.android.applicationVariants.all { variant ->
       if (variant.buildType.isDebuggable()) {
